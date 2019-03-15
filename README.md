@@ -1,0 +1,2 @@
+# PreparazioneVerifica
+preparazione verifica sincronizzazione
