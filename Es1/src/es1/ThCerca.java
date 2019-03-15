@@ -27,11 +27,20 @@ public class ThCerca extends Thread {
     public void run() {
         try {
             int n = 0;
-            
+
             int ii = ptrDati.getNumeroCaratteri();
             for (int i = 0; i < ii; i++) {
 
-                ptrDati.waitSemRicerca();
+                switch (daCercare) {
+                    case ' ':
+                        ptrDati.waitSemRicercaSpazio();
+                        break;
+                        
+                    case '.':
+                        ptrDati.waitSemRicercaPunto();
+                        break;
+                }
+                
                 if (daCercare == ptrDati.getBuffer(i)) {
                     n++;
                 }
@@ -39,9 +48,12 @@ public class ThCerca extends Thread {
                 switch (daCercare) {
                     case ' ':
                         ptrDati.setNumSpaziLetti(n);
+                        ptrDati.signalSemVisualizza();
                         break;
+                        
                     case '.':
                         ptrDati.setNumPuntiLetti(n);
+                        ptrDati.signalSemVisualizza();
                         break;
                 }
 
@@ -49,6 +61,6 @@ public class ThCerca extends Thread {
         } catch (InterruptedException ex) {
             //Logger.getLogger(ThCerca.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        ptrDati.signalFinish();
     }
 }

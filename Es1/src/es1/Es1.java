@@ -36,10 +36,10 @@ public class Es1 {
             tg.start();
             tp.start();
             ts.start();
+            tv.start();    
             
-            tv.join();
-            tp.join();
-            ts.join();
+            dati.waitFinish();
+            
             /*
             System.out.println(" _____________________________________________________________________________");
             if(dati.getNumPuntiInseriti()==dati.getNumPuntiLetti()){

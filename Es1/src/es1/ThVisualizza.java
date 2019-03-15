@@ -6,6 +6,8 @@
 package es1;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -27,20 +29,26 @@ public class ThVisualizza extends Thread {
 
     @Override
     public void run() {
-        while (finito) {
-            System.out.println("-------------------------------------------");
-
-            System.out.println("Spazi Inseriti: " + ptrDati.getNumSpaziInseriti());
-            System.out.println("Spazi Letti: " + ptrDati.getNumSpaziLetti());
-            System.out.println("Punti Inseriti: " + ptrDati.getNumPuntiInseriti());
-            System.out.println("Spazi Letti: " + ptrDati.getNumSpaziLetti());
-
-            System.out.print("Buffer --> ");
-            for (int i = 0; i < ptrDati.getBuffer().size(); i++) {
-                System.out.print(ptrDati.getBuffer(i));
+        try {
+            while (finito) {
+                ptrDati.waitSemVisualizza();
+                
+                System.out.println("-------------------------------------------");
+                System.out.println("Spazi Inseriti: " + ptrDati.getNumSpaziInseriti());
+                System.out.println("Spazi Letti: " + ptrDati.getNumSpaziLetti());
+                System.out.println("Punti Inseriti: " + ptrDati.getNumPuntiInseriti());
+                System.out.println("Spazi Letti: " + ptrDati.getNumSpaziLetti());
+                System.out.print("Buffer --> ");
+                for (int i = 0; i < ptrDati.getBuffer().size(); i++) {
+                    System.out.print(ptrDati.getBuffer(i));
+                }
+                System.out.println("\n" + "-------------------------------------------");
+                
             }
-
-            System.out.println("\n" + "-------------------------------------------");
+        } catch (InterruptedException ex) {
+            Logger.getLogger(ThVisualizza.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        ptrDati.signalFinish();
     }
 }

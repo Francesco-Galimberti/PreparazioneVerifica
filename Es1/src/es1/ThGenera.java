@@ -6,6 +6,8 @@
 package es1;
 
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -21,36 +23,48 @@ public class ThGenera extends Thread {
 
     @Override
     public void run() {
-        Random rand = new Random();
-        int n;
-        char r = ' ';
+        try {
+            Random rand = new Random();
+            int n;
+            char r = ' ';
 
-        int ii = ptrDati.getNumeroCaratteri();
-        for (int i = 0; i < ii; i++) {
-            //generazione casuale da 0 a 27
-            n = rand.nextInt(28);
+            int ii = ptrDati.getNumeroCaratteri();
+            for (int i = 0; i < ii; i++) {
 
-            switch (n) {
-                case 26:
-                    r = '.';
-                    ptrDati.addBuffer(r);
-                    ptrDati.incNumPuntiInseriti();
-                    break;
+                //generazione casuale da 0 a 27
+                n = rand.nextInt(28);
 
-                case 27:
-                    r = ' ';
-                    ptrDati.addBuffer(r);
-                    ptrDati.incNumSpaziInseriti();
-                    break;
+                switch (n) {
+                    case 26:
+                        r = '.';
+                        ptrDati.addBuffer(r);
+                        ptrDati.incNumPuntiInseriti();
+                        break;
 
-                default:
-                    r = (char) (n + 'a');
-                    ptrDati.addBuffer(r);
-                    break;
-            }
-            
-            ptrDati.signalSemRicerca();
-            ptrDati.signalSemRicerca();
+                    case 27:
+                        r = ' ';
+                        ptrDati.addBuffer(r);
+                        ptrDati.incNumSpaziInseriti();
+                        break;
+
+                    default:
+                        r = (char) (n + 'a');
+                        ptrDati.addBuffer(r);
+                        break;
+                }
+                
+
+                ptrDati.signalSemVisualizza();
+                ptrDati.signalSemRicercaPunto();
+                ptrDati.signalSemRicercaSpazio();
+
+                Thread.sleep(100);
+            }     
+
+        } catch (InterruptedException ex) {
+            Logger.getLogger(ThGenera.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        ptrDati.signalFinish();
     }
 }

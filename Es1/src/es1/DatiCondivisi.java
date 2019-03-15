@@ -24,11 +24,14 @@ public class DatiCondivisi {
     private int numPuntiLetti;
     
     //necessario per la sincronizzazione dei thread genera e cerca
-    private Semaphore semRicerca;
+    private Semaphore semRicercaPunto;
+    private Semaphore semRicercaSpazio;
     
     //necessario per la sincronizzazione per la visualizzazione
-    private Semaphore semVisualizza1;
-    private Semaphore semVisualizza2;
+    private Semaphore semVisualizza;
+    
+    //necessario per la fine
+    private Semaphore finish;
 
     public DatiCondivisi(int nC) {
         buffer = new ArrayList<Carattere>();
@@ -39,28 +42,35 @@ public class DatiCondivisi {
         numSpaziLetti = 0;
         numPuntiLetti = 0;
         
-        semRicerca=new Semaphore(2);
-        semVisualizza1=new Semaphore(1);
-        semVisualizza2=new Semaphore(0);
+        semRicercaPunto=new Semaphore(0);
+        semRicercaSpazio=new Semaphore(0);
+        semVisualizza=new Semaphore(1);
+        finish=new Semaphore(-3);
     }
     
-    public synchronized void waitSemRicerca() throws InterruptedException{
-        semRicerca.acquire();
+    public synchronized void waitSemRicercaPunto() throws InterruptedException{
+        semRicercaPunto.acquire();
     }
-    public synchronized void signalSemRicerca(){
-        semRicerca.release();
+    public synchronized void signalSemRicercaPunto(){
+        semRicercaPunto.release();
     }
-    public synchronized void waitSemVisualizza1() throws InterruptedException{
-        semVisualizza1.acquire();
+    public synchronized void waitSemRicercaSpazio() throws InterruptedException{
+        semRicercaSpazio.acquire();
     }
-    public synchronized void signalSemVisualizza1(){
-        semVisualizza1.release();
+    public synchronized void signalSemRicercaSpazio(){
+        semRicercaSpazio.release();
     }
-    public synchronized void waitSemVisualizza2() throws InterruptedException{
-        semVisualizza2.acquire();
+    public synchronized void waitSemVisualizza() throws InterruptedException{
+        semVisualizza.acquire();
     }
-    public synchronized void signalSemVisualizza2(){
-        semVisualizza2.release();
+    public synchronized void signalSemVisualizza(){
+        semVisualizza.release();
+    }
+    public synchronized void waitFinish() throws InterruptedException{
+        semVisualizza.acquire();
+    }
+    public synchronized void signalFinish(){
+        semVisualizza.release();
     }
 
     public synchronized int getNumeroCaratteri() {
