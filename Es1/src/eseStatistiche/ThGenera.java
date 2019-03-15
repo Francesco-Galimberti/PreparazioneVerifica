@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package es1;
+package eseStatistiche;
 
 import java.util.Random;
 import java.util.logging.Level;
@@ -15,33 +15,39 @@ import java.util.logging.Logger;
  */
 public class ThGenera extends Thread {
 
-    private DatiCondivisi ptrDati;
+    private final DatiCondivisi ptrDati;
+    private final int time;
 
-    public ThGenera(DatiCondivisi dati) {
+    public ThGenera(DatiCondivisi dati, int nC) {
         ptrDati = dati;
+        time = nC;
     }
 
     @Override
     public void run() {
+        Random rand = new Random();
+        int n;
+        char r = ' ';
         try {
-            Random rand = new Random();
-            int n;
-            char r = ' ';
-
-            int ii = ptrDati.getNumeroCaratteri();
-            for (int i = 0; i < ii; i++) {
+            for (int i = 0; i < time; i++) {                
+                
+                //attendo che visualizza abbia finito
+                ptrDati.waitSemVisualizza2();
+                
+                //attendo che abbiano cercato
+                ptrDati.waitSemGeneraPunto();
+                ptrDati.waitSemGeneraSpazio();
 
                 //generazione casuale da 0 a 27
                 n = rand.nextInt(28);
-
                 switch (n) {
-                    case 26:
+                    case 27:
                         r = '.';
                         ptrDati.addBuffer(r);
                         ptrDati.incNumPuntiInseriti();
                         break;
 
-                    case 27:
+                    case 26:
                         r = ' ';
                         ptrDati.addBuffer(r);
                         ptrDati.incNumSpaziInseriti();
@@ -51,20 +57,19 @@ public class ThGenera extends Thread {
                         r = (char) (n + 'a');
                         ptrDati.addBuffer(r);
                         break;
-                }
-                
-
-                ptrDati.signalSemVisualizza();
+                }                
+                //notifico un cambiamento
+                ptrDati.signalSemVisualizza1();
+                //notifico che possono cercare
                 ptrDati.signalSemRicercaPunto();
                 ptrDati.signalSemRicercaSpazio();
-
+                
                 Thread.sleep(100);
-            }     
-
+            }
+            ptrDati.signalFinish();
+            
         } catch (InterruptedException ex) {
             Logger.getLogger(ThGenera.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        ptrDati.signalFinish();
     }
 }
