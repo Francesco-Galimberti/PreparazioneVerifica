@@ -23,11 +23,11 @@ public class DatiCondivisi {
     //vettore che memorizza se ho fatto ambo
     private boolean[] vincita;
 
-    //se ho finito di effettuare la verifica
-    private boolean finito;
-
     private Semaphore semRicercaN1;
     private Semaphore semRicercaN2;
+    
+    private Semaphore sem1;
+    private Semaphore sem2;
 
     private Semaphore finish;
 
@@ -36,14 +36,14 @@ public class DatiCondivisi {
 
         this.uscitaN1 = false;
         this.uscitaN2 = false;
-        this.finito = false;
 
         this.vincita = new boolean[this.nRuote];
         this.vettori = new ArrayList<Estrazione>();
 
         semRicercaN1 = new Semaphore(0);
-        semRicercaN2 = new Semaphore(0);
-
+        semRicercaN2 = new Semaphore(0);        
+        sem1 = new Semaphore(0);
+        sem2 = new Semaphore(0);        
         finish = new Semaphore(-2);
     }
 
@@ -70,6 +70,21 @@ public class DatiCondivisi {
     public void signalSemRicercaN2() {
         semRicercaN2.release();
     }
+    public void waitSem1() throws InterruptedException {
+        sem1.acquire();
+    }
+
+    public void signalSem1() {
+        sem1.release();
+    }
+
+    public void waitSem2() throws InterruptedException {
+        sem2.acquire();
+    }
+
+    public void signalSem2() {
+        sem2.release();
+    }
 
     public synchronized int getnRuote() {
         return nRuote;
@@ -91,16 +106,8 @@ public class DatiCondivisi {
         this.uscitaN2 = uscitaN2;
     }
 
-    public synchronized boolean isFinito() {
-        return finito;
-    }
-
     public synchronized boolean getVincitaPosizione(int p) {
         return vincita[p];
-    }
-
-    public synchronized void setFinito(boolean finito) {
-        this.finito = finito;
     }
 
     public synchronized void setVincitaPosizione(boolean vincita, int p) {

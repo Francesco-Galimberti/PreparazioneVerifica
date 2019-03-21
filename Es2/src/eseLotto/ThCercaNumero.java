@@ -32,13 +32,11 @@ public class ThCercaNumero extends Thread {
 
             //numero estrazioni
             for (int i = 0; i < nE; i++) {
-                
-                
-                
-                if (nThread == 1) {                        
-                    ptrDati.waitSemRicercaN1(); 
+
+                if (nThread == 1) {
+                    ptrDati.waitSemRicercaN1();
                     ptrDati.setUscitaN1(false);
-                } else {                    
+                } else {
                     ptrDati.waitSemRicercaN2();
                     ptrDati.setUscitaN2(false);
                 }
@@ -60,25 +58,22 @@ public class ThCercaNumero extends Thread {
                     j++;
                 }
 
-                Thread.sleep((int) (Math.random() * 150 + Math.random() * 150 - Math.random() * 100)); 
-                
-                //se l'atro THREAD è terminato
-                if (ptrDati.isFinito()) {
+                //Thread.sleep((int) (Math.random() * 100 + Math.random() * 100)); 
+                if (nThread == 1) {
+                    ptrDati.waitSem1();                    
                     //verifico se ambo
                     if (ptrDati.isUscitaN1() && ptrDati.isUscitaN2()) {
                         ptrDati.setVincitaPosizione(true, i);
                     } else {
                         ptrDati.setVincitaPosizione(false, i);
-                    }
-                    //annullo variabile 
-                    ptrDati.setFinito(false);
-
+                    }                    
+                    ptrDati.signalSem2();
                 } else {
-                    //altrimenti dico che ho finito
-                    ptrDati.setFinito(true);
+                    ptrDati.signalSem1();
+                    ptrDati.waitSem2();
                 }
             }
-            
+
             ptrDati.signalFinish();
 
         } catch (InterruptedException ex) {
